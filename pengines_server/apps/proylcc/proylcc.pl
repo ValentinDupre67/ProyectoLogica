@@ -23,5 +23,19 @@ flick(Grid, Color, FGrid):-
 %
 % Retorna Winner que es el estado que indica si el juego ha sido completado.
 
-gameStatus(Grid, Winner):-
+%gameStatus(Grid,Winner):- 
 	
+%Este flick2 sirve para posicionarnos y nos da la posibilidad de cambiar el elemento viejo en esa posicion
+flick2(Grid,Color,FGrid,I,J):-
+    nth0(I,Grid,F),
+    nth0(J,F,X),
+    Color \= X, %X es el color viejo, en esta linea se detecta si estamos cambiando de color
+    replace_nth0(F,J,X,Color,NF), % Remplaza en la Fila F columna J, el color viejo X por Color nuevo y devuelve NF
+	replace_nth0(Grid, I, F, NF, FGrid). % Remplaza en la Grid la fila I, la fila vieja F por la nueva fila NF y devuelve FGrid
+	remplazar_Ady(X,Color,I,J) /*lo que se me ocurre es que a partir de la pos I,J entre en bucle hasta no poder remplazar mas*/
+
+replace_nth0(List, Index, OldElem, NewElem, NewList) :-
+   % predicate works forward: Index,List -> OldElem, Transfer
+   nth0(Index,List,OldElem,Transfer),
+   % predicate works backwards: Index,NewElem,Transfer -> NewList
+   nth0(Index,NewList,NewElem,Transfer).

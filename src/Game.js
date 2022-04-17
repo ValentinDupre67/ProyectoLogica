@@ -113,6 +113,12 @@ class Game extends React.Component {
             <div className="turnsLab">Turns</div>
             <div className="turnsNum">{this.state.turns}</div>
           </div>
+          <div className='Historial'>
+              
+          </div>
+          <div className='Capturados'>
+
+          </div>
         </div>
         <Board grid={this.state.grid} />
       </div>

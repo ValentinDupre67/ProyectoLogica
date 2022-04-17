@@ -73,7 +73,7 @@ class Game extends React.Component {
     //        [r,b,b,v,p,y,p,r,b,g,p,y,b,r],
     //        [v,g,p,b,v,v,g,g,g,b,v,g,g,g]],r, Grid)
     const gridS = JSON.stringify(this.state.grid).replaceAll('"', "");
-    const queryS = "flick(" + gridS + "," + color + ", Grid)";
+    const queryS = "flick(" + gridS + "," + color + ", Grid)"+", gameStatus(Grid, Winner).";
     this.setState({
       waiting: true
     });
@@ -82,7 +82,8 @@ class Game extends React.Component {
         this.setState({
           grid: response['Grid'],
           turns: this.state.turns + 1,
-          waiting: false
+          waiting: false,
+          complete: response['Winner']
         });
       } else {
         // Prolog query will fail when the clicked color coincides with that in the top left cell.

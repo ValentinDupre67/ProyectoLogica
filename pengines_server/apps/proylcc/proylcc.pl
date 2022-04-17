@@ -1,6 +1,7 @@
 :- module(proylcc, 
 	[  
-		flick/3
+		flick/3,
+		gameStatus/2
 	]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -16,3 +17,11 @@ flick(Grid, Color, FGrid):-
 	Color \= X,
 	FGrid = [[Color|Xs]|Fs].
 
+
+%
+% gameStatus(+Grid, +Winner)
+%
+% Retorna Winner que es el estado que indica si el juego ha sido completado.
+
+gameStatus(Grid, Winner):-
+	

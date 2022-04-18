@@ -39,3 +39,23 @@ replace_nth0(List, Index, OldElem, NewElem, NewList) :-
    nth0(Index,List,OldElem,Transfer),
    % predicate works backwards: Index,NewElem,Transfer -> NewList
    nth0(Index,NewList,NewElem,Transfer).
+
+   adyacenteUp(0,_,_,_,Grid,Grid).
+/*  
+
+adyacenteUp(F,C,ColorAl,ColorNo,Grid,NewGrid2):-
+    succ(Fmas,F),
+    nth0(Fmas,Grid,NewFila),
+    nth0(C,NewFila,ElemAd),
+	ElemAd == ColorAl,
+	replace_nth0(NewFila,C,ElemAd,ColorNo,NF), 
+	replace_nth0(Grid, Fmas, NewFila, NF, NewGrid),
+ 	adyacenteUp(Fmas,C,ColorAl,ColorNo,NewGrid,NewGrid2) , !.
+
+adyacenteUp(F,C,ColorAl,_,Grid,Grid):-    
+    nth0(F,Grid,NewFila),
+    nth0(C,NewFila,ElemAd),
+	ElemAd \= ColorAl , !.
+	
+*/
+	

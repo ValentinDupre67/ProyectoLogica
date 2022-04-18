@@ -41,7 +41,7 @@ class Game extends React.Component {
   }
 
   handlePengineCreate() {
-    const queryS = 'init(Grid)';
+    const queryS = 'init(Grid)';    
     this.pengine.query(queryS, (success, response) => {
       if (success) {
         this.setState({

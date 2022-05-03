@@ -73,7 +73,11 @@ class Game extends React.Component {
     //        [r,b,b,v,p,y,p,r,b,g,p,y,b,r],
     //        [v,g,p,b,v,v,g,g,g,b,v,g,g,g]],r, Grid)
     const gridS = JSON.stringify(this.state.grid).replaceAll('"', "");
-    const queryS = "flick(" + gridS + "," + color + ", Grid)"+", gameStatus(Grid, Winner).";
+
+    //const queryS = "flick(" + gridS + "," + color + ", Grid)"+", gameStatus(Grid, Winner).";
+    // flick3(Grid,F,C,ColorNuevo,FGrid,ListaAdyacentes):-
+   
+    const queryS = "flick3(" + gridS +","+ 1 +","+ 1 +","+ color +",Grid, ListaAdyacentes)";
     this.setState({
       waiting: true
     });
@@ -82,6 +86,7 @@ class Game extends React.Component {
         this.setState({
           grid: response['Grid'],
           turns: this.state.turns + 1,
+          adyacentes: response['ListaAdyacentes'],
           waiting: false,
           complete: response['Winner']
         });

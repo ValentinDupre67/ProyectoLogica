@@ -1,7 +1,23 @@
 :- module(proylcc, 
 	[  
 		flick/3,
-		gameStatus/2
+		flick3/6,
+		getColor/4,
+		adyC/4,
+		adyacentesC/4,
+		adyUp/6,
+		adyDer/6,
+		adyDown/6,
+		adyIzq/6,
+		pintar/6,
+		replace_nth0/5,
+		remplazar_Color_En_Grilla/7,
+		buscar_Color_En_Grilla/5,
+		resta/2,
+		adyacenteUp/6,
+		adyacenteDown/6,
+		adyacenteLeft/6,
+		adyacenteRight/6
 	]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -26,36 +42,282 @@ flick(Grid, Color, FGrid):-
 %gameStatus(Grid,Winner):- 
 	
 %Este flick2 sirve para posicionarnos y nos da la posibilidad de cambiar el elemento viejo en esa posicion
-flick2(Grid,Color,FGrid,I,J):-
-    nth0(I,Grid,F),
-    nth0(J,F,X),
-    Color \= X, %X es el color viejo, en esta linea se detecta si estamos cambiando de color
-    replace_nth0(F,J,X,Color,NF), % Remplaza en la Fila F columna J, el color viejo X por Color nuevo y devuelve NF
-	replace_nth0(Grid, I, F, NF, FGrid). % Remplaza en la Grid la fila I, la fila vieja F por la nueva fila NF y devuelve FGrid
-	remplazar_Ady(X,Color,I,J) /*lo que se me ocurre es que a partir de la pos I,J entre en bucle hasta no poder remplazar mas*/
 
-replace_nth0(List, Index, OldElem, NewElem, NewList) :-
-   % predicate works forward: Index,List -> OldElem, Transfer
+%VAMO A ver
+flick3(Grid,F,C,ColorNuevo,FGrid,ListaAdyacentes):-
+    getColor(F,C,Grid,ColorOriginal),
+    pintar(F,C,ColorOriginal,ColorNuevo,Grid,FGrid),
+    adyacentesC(FGrid,F,C,ListaAdyacentes).
+
+%Valen codig
+
+pintar(F,C,ColorAl,ColorNo,Grid,NewGrid):-
+   	adyacenteUp(F,C,ColorAl,ColorNo,Grid,NewGrid2),
+    adyacenteDown(F,C,ColorAl,ColorNo,NewGrid2,NewGrid3),
+    adyacenteLeft(F,C,ColorAl,ColorNo,NewGrid3,NewGrid4),
+	adyacenteRight(F,C,ColorAl,ColorNo,NewGrid4,NewGrid).
+
+replace_nth0(List, Index, OldElem, NewElem, NewList) :- 
    nth0(Index,List,OldElem,Transfer),
-   % predicate works backwards: Index,NewElem,Transfer -> NewList
    nth0(Index,NewList,NewElem,Transfer).
 
-   adyacenteUp(0,_,_,_,Grid,Grid).
-/*  
+remplazar_Color_En_Grilla(Lista,Grid,F,C,ElemAd,ColorNo,NuevaGrid):-
+    replace_nth0(Lista,C,ElemAd,ColorNo,NuevaFila),
+    replace_nth0(Grid,F,Lista,NuevaFila,NuevaGrid).
 
-adyacenteUp(F,C,ColorAl,ColorNo,Grid,NewGrid2):-
-    succ(Fmas,F),
-    nth0(Fmas,Grid,NewFila),
-    nth0(C,NewFila,ElemAd),
-	ElemAd == ColorAl,
-	replace_nth0(NewFila,C,ElemAd,ColorNo,NF), 
-	replace_nth0(Grid, Fmas, NewFila, NF, NewGrid),
- 	adyacenteUp(Fmas,C,ColorAl,ColorNo,NewGrid,NewGrid2) , !.
+buscar_Color_En_Grilla(F,C,Grid,NewFila,ElemAd):-
+	nth0(F,Grid,NewFila),
+    nth0(C,NewFila,ElemAd).
+
+resta(Numero,Resultado):- Resultado is Numero-1.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+/*
+ * Este metodo  
+ * */
+adyacenteUp(-1,_,_,_,Grid,Grid).
 
 adyacenteUp(F,C,ColorAl,_,Grid,Grid):-    
-    nth0(F,Grid,NewFila),
-    nth0(C,NewFila,ElemAd),
-	ElemAd \= ColorAl , !.
-	
+    buscar_Color_En_Grilla(F,C,Grid,_,ElemAd),    
+	ElemAd \= ColorAl.
+
+adyacenteUp(F,C,ColorAl,ColorNo,Grid,NewGrid):- 
+    buscar_Color_En_Grilla(F,C,Grid,NewFila,ElemAd),
+	ElemAd == ColorAl,    
+    remplazar_Color_En_Grilla(NewFila,Grid,F,C,ElemAd,ColorNo,NewGrid1),    
+    adyacenteLeft(F,C,ColorAl,ColorNo,NewGrid1,NewGrid2),
+    adyacenteRight(F,C,ColorAl,ColorNo,NewGrid2,NewGrid3),
+    resta(F,Fmenos),
+ 	adyacenteUp(Fmenos,C,ColorAl,ColorNo,NewGrid3,NewGrid).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+adyacenteLeft(_,0,_,_,Grid,Grid).
+
+adyacenteLeft(F,C,ColorAl,_,Grid,Grid):-
+    succ(Cmenos,C),
+    buscar_Color_En_Grilla(F,Cmenos,Grid,_,ElemAd),
+	ElemAd \= ColorAl.
+
+adyacenteLeft(F,C,ColorAl,ColorNo,Grid,NewGrid):-
+	succ(Cmenos,C),
+    buscar_Color_En_Grilla(F,Cmenos,Grid,NewFila,ElemAd),
+	ElemAd == ColorAl,
+    remplazar_Color_En_Grilla(NewFila,Grid,F,Cmenos,ElemAd,ColorNo,NewGrid1),    
+    resta(F,Fmenos),
+    adyacenteUp(Fmenos,Cmenos,ColorAl,ColorNo,NewGrid1,NewGrid2),
+    adyacenteDown(F,Cmenos,ColorAl,ColorNo,NewGrid2,NewGrid3),    
+   	adyacenteLeft(F,Cmenos,ColorAl,ColorNo,NewGrid3,NewGrid).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+adyacenteRight(_,CantCol,_,_,[X|Xs],[X|Xs]):-
+    length(X,L),
+    CantCol is L-1.
+
+adyacenteRight(F,C,ColorAl,_,Grid,Grid):-
+    succ(C,Cmas),
+    buscar_Color_En_Grilla(F,Cmas,Grid,_,ElemAd),
+	ElemAd \= ColorAl.
+
+adyacenteRight(F,C,ColorAl,ColorNo,Grid,NewGrid):-
+	succ(C,Cmas),
+    buscar_Color_En_Grilla(F,Cmas,Grid,NewFila,ElemAd),
+	ElemAd == ColorAl,    
+    remplazar_Color_En_Grilla(NewFila,Grid,F,Cmas,ElemAd,ColorNo,NewGrid1),    
+    resta(F,Fmenos),
+    adyacenteUp(Fmenos,Cmas,ColorAl,ColorNo,NewGrid1,NewGrid2),
+    adyacenteDown(F,Cmas,ColorAl,ColorNo,NewGrid2,NewGrid3),    
+ 	adyacenteRight(F,Cmas,ColorAl,ColorNo,NewGrid3,NewGrid).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+adyacenteDown(CnatFil,_,_,_,Grid,Grid):-
+    length(Grid,L),
+    CnatFil is L-1.
+
+adyacenteDown(F,C,ColorAl,_,Grid,Grid):-
+    succ(F,Fmas),
+    buscar_Color_En_Grilla(Fmas,C,Grid,_,ElemAd),
+	ElemAd \= ColorAl.
+
+adyacenteDown(F,C,ColorAl,ColorNo,Grid,NewGrid):-
+    succ(F,Fmas),
+    buscar_Color_En_Grilla(Fmas,C,Grid,NewFila,ElemAd),
+	ElemAd == ColorAl,    
+    remplazar_Color_En_Grilla(NewFila,Grid,Fmas,C,ElemAd,ColorNo,NewGrid1),    
+    adyacenteLeft(Fmas,C,ColorAl,ColorNo,NewGrid1,NewGrid2),
+    adyacenteRight(Fmas,C,ColorAl,ColorNo,NewGrid2,NewGrid3),    
+ 	adyacenteDown(Fmas,C,ColorAl,ColorNo,NewGrid3,NewGrid).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	 
+
+%Rama codig
+
+%%Get color devuelve el color que en la Fila F Columna C de grilla
+getColor(F,C,Grilla,Color):-
+    nth0(F,Grilla,Fila),
+    nth0(C,Fila,Color).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%determina si dos posiciones son adyacentes
+%Como va a ser llamado de una posicion que ya viene siendo adyC desde antes me despreocupo
+%Lo que hace es ver si sigue siendo del mismo color
+%obtiene el color en F,C y verifica si este ColorNuevo unifica con ColorOriginal
+%F y C Serian nuevas posiciones que se estan checkeando, no las F y C originales
+adyC(F,C,Grilla,ColorOriginal):-
+    getColor(F,C,Grilla,ColorNuevo),
+    ColorNuevo = ColorOriginal.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+/*METODO CASCARA AdyacentesC(Grilla,F,C,ListaAdyacentes) => Devuelve
+ * una lista con los adyacentes de F,C, utiliza adyAux para hacer todo el trabajo*/
+
+
+/*
+adyacentesC(Grilla, F, C, ListaAdyacentes):-
+    getColor(F,C,Grilla,ColorOriginal), %obtenes el color con el cual empezas
+    adyUp(Grilla,F,C,ColorOriginal,[],ListaAdyacentes).
 */
+
+adyacentesC(Grilla, F, C, ListaAdyacentes):-
+    getColor(F,C,Grilla,ColorOriginal), %obtenes el color con el cual empezas
+    adyUp(Grilla,F,C,ColorOriginal,[],ListaAdyacentesUp),
+    FDown is F+1,
+    adyDown(Grilla,FDown,C,ColorOriginal,ListaAdyacentesUp,ListaAdyacentesDown),
+    Cder is C+1,
+    adyDer(Grilla,F,Cder,ColorOriginal,ListaAdyacentesDown,ListaAdyacentesDer),
+    Cizq is C-1,
+    adyIzq(Grilla,F,Cizq,ColorOriginal,ListaAdyacentesDer,ListaAdyacentes).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%CASO BASE ME FUI DE LA GRILLA
+adyUp(_Grilla,-1,_C,_ColorOriginal,LVisi,LVisi).
+  
+%CASO BASE NO UNIFICAN LOS COLORES => NO ACTUALIZO LA LISTA
+adyUp(Grilla,F,C,ColorOriginal,LVisi,LVisi):-
+    getColor(F,C,Grilla,ColorNuevo),
+    ColorNuevo \= ColorOriginal.
+  
+%CASO BASE F,C YA ES MIEMBRO => NO ACTUALIZO LA LISTA
+adyUp(_Grilla,F,C,_ColorOriginal,LVisi,LVisi):-
+ %   getColor(F,C,Grilla,ColorNuevo),
+ %   ColorNuevo = ColorOriginal,
+    member([F,C],LVisi).
+
+%
+%CASO RECURSIVO F y C ya son nuevos, es decir FUp y C
+% ESTE ES EL CASO EN EL QUE F,C es ADYC y NO ES MIEMBRO => Lo agrego
+adyUp(Grilla,F,C,ColorOriginal,LVisi,LVisiUp2):-
+	getColor(F,C,Grilla,ColorNuevo),
+    ColorNuevo = ColorOriginal,
+    \+ member([F,C],LVisi), %FUp y C no estan en LVisi y los debemos agregar
+    append([[F,C]],LVisi,LVisiUp),
+    CDer is C+1,
+    adyDer(Grilla,F,CDer,ColorOriginal,LVisiUp,LVisiDer),
+    CIzq is C-1,
+    adyIzq(Grilla,F,CIzq,ColorOriginal,LVisiDer,LVisiIzq),
+    FUp is F-1,
+    adyUp(Grilla,FUp,C,ColorOriginal,LVisiIzq,LVisiUp2).
+    
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Caso BASE Nos salimos de la grilla
+adyDer([X|_Xs],_F,L,_ColorOriginal,LVisi,LVisi):-
+    length(X,L). %Obtenemos la longitud de la primera fila de la Grilla
+	%C is L-1.% CONSULTAR QUE NUMERO O QUE EXPRESION USAR ACA
+    %C  L. %??
+
+%CASO BASE NO UNIFICAN LOS COLORES 
+adyDer(Grilla,F,C,ColorOriginal,LVisi,LVisi):-
+    getColor(F,C,Grilla,ColorNuevo),
+    ColorNuevo \= ColorOriginal.
+
+%CASO BASE YA ES MEMBER
+
+adyDer(Grilla,F,C,ColorOriginal,LVisi,LVisi):-
+    getColor(F,C,Grilla,ColorNuevo),
+    ColorNuevo = ColorOriginal,
+    member([F,C], LVisi).
+
+%RECORDAR que F = FOriginal y C = COriginal+1
+adyDer(Grilla,F,C,ColorOriginal,LVisi,LVisiDer2):-
+    getColor(F,C,Grilla,ColorNuevo),
+    ColorNuevo = ColorOriginal,
+    \+ member([F,C],LVisi), %F y CDer no estan en LVisi y los debemos agregar
+    append([[F,C]],LVisi,LVisiDer),
+    FUp is F-1,
+    adyUp(Grilla,FUp,C,ColorOriginal,LVisiDer,LVisiUp),
+    FDown is F+1,
+    adyDown(Grilla,FDown,C,ColorOriginal,LVisiUp,LVisiDown),
+    CDer is C+1,
+    adyDer(Grilla,F,CDer,ColorOriginal,LVisiDown,LVisiDer2).
 	
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%CASO BASE me fui de la grilla 
+adyDown(Grilla,F,_C,_ColorOriginal,LVisi,LVisi):-
+    length(Grilla,F). %Basicamente si la F es la longitud de la Grilla
+
+%CASO BASE No unifican los colores
+adyDown(Grilla,F,C,ColorOriginal,LVisi,LVisi):-
+    getColor(F,C,Grilla,ColorNuevo),
+    ColorNuevo \= ColorOriginal.
+
+%CASO BASE F,C YA ES MIEMBRO => NO ACTUALIZO LA LISTA
+adyDown(_Grilla,F,C,_ColorOriginal,LVisi,LVisi):-
+ %   getColor(F,C,Grilla,ColorNuevo),
+ %   ColorNuevo = ColorOriginal,
+    member([F,C],LVisi).
+
+
+%Caso recursivo
+adyDown(Grilla,F,C,ColorOriginal,LVisi,LVisiDown2):-
+    getColor(F,C,Grilla,ColorNuevo),
+    ColorNuevo = ColorOriginal,
+    \+ member([F,C],LVisi),  %Fdown y C no estan en LVisi y los debemos agregar
+    append([[F,C]],LVisi,LVisiDown),
+    %Disparar otras direcciones
+    CDer is C+1,
+    adyDer(Grilla,F,CDer,ColorOriginal,LVisiDown,LVisiDer),
+    CIzq is C-1,
+    adyIzq(Grilla,F,CIzq,ColorOriginal,LVisiDer,LVisiIzq),
+    FDown is F+1,
+    adyDown(Grilla,FDown,C,ColorOriginal,LVisiIzq,LVisiDown2).
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Caso BASE me fui de la grilla
+adyIzq(_Grilla,_F,-1,_ColorOriginal,LVisi,LVisi).
+
+%Caso Base No unifican los colores
+adyIzq(Grilla,F,C,ColorOriginal,LVisi,LVisi):-
+    getColor(F,C,Grilla,ColorNuevo),
+    ColorNuevo \= ColorOriginal.
+
+%Caso base F,C Ya es miembro => No actualizo lista visitados
+adyIzq(_Grilla,F,C,_ColorOriginal,LVisi,LVisi):-
+ %   getColor(F,C,Grilla,ColorNuevo),
+ %   ColorNuevo = ColorOriginal,
+    member([F,C],LVisi).
+
+%Caso recursivo
+adyIzq(Grilla,F,C,ColorOriginal,LVisi,LVisiIzq2):-
+    getColor(F,C,Grilla,ColorNuevo),
+    ColorNuevo = ColorOriginal,
+    \+ member([F,C],LVisi),  %F y CIzq no estan en LVisi y los debemos agregar
+    append([[F,C]],LVisi,LVisiIzq),
+    %Disparar otras direcciones
+    FUp is F-1,
+    adyUp(Grilla,FUp,C,ColorOriginal,LVisiIzq,LVisiUp),
+    FDown is F+1,
+    adyDown(Grilla,FDown,C,ColorOriginal,LVisiUp,LVisiDown),
+    CIzq is C-1,
+    adyIzq(Grilla,F,CIzq,ColorOriginal,LVisiDown,LVisiIzq2).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

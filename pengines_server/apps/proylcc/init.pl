@@ -1,11 +1,11 @@
 :- module(init, [ init/1 ]).
 
 init([
-		 [y,g,b,g,v,y,p,v,b,p,v,p,v,r],
-		 [r,r,p,p,g,v,v,r,r,b,g,v,p,r],
-		 [b,v,g,y,b,g,r,g,p,g,p,r,y,y],
-		 [r,p,y,y,y,p,y,g,r,g,y,v,y,p],
-		 [y,p,y,v,y,g,g,v,r,b,v,y,r,g],
+		 [y,y,y,g,v,y,p,v,b,p,v,p,v,r],
+		 [y,r,y,p,g,v,v,r,r,b,g,v,p,r],
+		 [y,r,y,y,b,g,r,g,p,g,p,r,y,y],
+		 [y,r,y,y,y,p,y,g,r,g,y,v,y,p],
+		 [y,r,y,v,y,g,g,v,r,b,v,y,r,g],
 		 [r,b,v,g,b,r,y,p,b,p,y,r,y,y],
 		 [p,g,v,y,y,r,b,r,v,r,v,y,p,y],
 		 [b,y,v,g,r,v,r,g,b,y,b,y,p,g],

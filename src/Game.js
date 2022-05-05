@@ -1,6 +1,9 @@
 import React from 'react';
 import PengineClient from './PengineClient';
 import Board from './Board';
+import Square from './Square';
+import { useState } from 'react/cjs/react.production.min';
+import userEvent from '@testing-library/user-event';
 
 /**
  * List of colors.
@@ -23,6 +26,19 @@ export function colorToCss(color) {
   }
   return color;
 }
+
+/*
+const BlockPintados = () => {
+  const [block, setBlock] =  useState([]);
+
+  const handleAddBlock = () => {
+    const newBlock = {
+      colorDelBlock: this.color
+    }
+  }
+  setBlock([...block, newBlock])
+}
+*/
 class Game extends React.Component {
 
   pengine;
@@ -33,7 +49,8 @@ class Game extends React.Component {
       turns: 0,
       grid: null,
       complete: false,  // true if game is complete, false otherwise
-      waiting: false
+      waiting: false,
+      movements: [],
     };
     this.handleClick = this.handleClick.bind(this);
     this.handlePengineCreate = this.handlePengineCreate.bind(this);
@@ -53,6 +70,8 @@ class Game extends React.Component {
 
   handleClick(color) {
     // No action on click if game is complete or we are waiting.
+    this.state.movements.push(color);
+
     if (this.state.complete || this.state.waiting) {
       return;
     }
@@ -99,11 +118,14 @@ class Game extends React.Component {
     });
   }
 
+
   render() {
     if (this.state.grid === null) {
       return null;
     }
     return (
+
+      <div className='Conteiner'>
       <div className="game">
         <div className="leftPanel">
           <div className="buttonsPanel">
@@ -111,7 +133,7 @@ class Game extends React.Component {
               <button
                 className="colorBtn"
                 style={{ backgroundColor: colorToCss(color) }}
-                onClick={() => this.handleClick(color)}
+                onClick={() => this.handleClick(color)}              
                 key={color}
               />)}
           </div>
@@ -123,11 +145,26 @@ class Game extends React.Component {
               
           </div>
           <div className='Capturados'>
-
           </div>
+          
         </div>
         <Board grid={this.state.grid} />
       </div>
+      <div className='movementsPanel'>
+            <div className='movementsAux'>Movement</div>
+            <div className='movements'> 
+            {this.state.movements.map((colors, i) =>
+              <Square 
+                value={colors}
+                key={i}
+                className={"movementSquare"}
+              />
+              )}
+            </div>
+          </div>
+      </div>
+
+      
     );
   }
 }

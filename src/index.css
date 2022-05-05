@@ -108,3 +108,7 @@ body {
   grid-template-columns: repeat(14, 40px);
   grid-template-rows: repeat(14, 40px);
 }
+
+.origin{
+  border: 2px solid white;
+}

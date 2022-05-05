@@ -27,18 +27,6 @@ export function colorToCss(color) {
   return color;
 }
 
-/*
-const BlockPintados = () => {
-  const [block, setBlock] =  useState([]);
-
-  const handleAddBlock = () => {
-    const newBlock = {
-      colorDelBlock: this.color
-    }
-  }
-  setBlock([...block, newBlock])
-}
-*/
 class Game extends React.Component {
 
   pengine;
@@ -96,11 +84,13 @@ class Game extends React.Component {
     //        [r,b,b,v,p,y,p,r,b,g,p,y,b,r],
     //        [v,g,p,b,v,v,g,g,g,b,v,g,g,g]],r, Grid)
     const gridS = JSON.stringify(this.state.grid).replaceAll('"', "");
-
-    //const queryS = "flick(" + gridS + "," + color + ", Grid)"+", gameStatus(Grid, Winner).";
-    // flick3(Grid,F,C,ColorNuevo,FGrid,ListaAdyacentes):-
-   const Fila = this.state.origin[0];
-   const Columna = this.state.origin[1];
+    const Fila = !this.state.origin ? 0: this.state.origin[0];
+    const Columna = !this.state.origin ? 0 :this.state.origin[1];
+    if(!this.state.origin){
+      this.setState({
+        origin:[0,0]
+      });
+    }
     const queryS = "flick(" + gridS +","+ Fila +","+ Columna +","+ color +",Grid, ListaAdyacentes)";
     this.setState({
       waiting: true
@@ -113,8 +103,10 @@ class Game extends React.Component {
           adyacentes: response['ListaAdyacentes'],
           waiting: false,
         });
-        if(this.state.adyacentes.length == 196){
-          this.state.complete = true;
+        if(this.state.adyacentes.length === 196){
+          this.setState({
+            complete: true
+          })
         }
       } else {
         // Prolog query will fail when the clicked color coincides with that in the top left cell.
@@ -130,6 +122,17 @@ class Game extends React.Component {
     this.setState({
       origin:pos
     })
+    const gridS = JSON.stringify(this.state.grid).replaceAll('"', "");
+    const Fila = pos[0];
+    const Columna = pos[1];
+    const queryS = "adyacentesC("+gridS+","+Fila+","+Columna+",ListaAdyacentes)";
+    this.pengine.query(queryS, (success,response)=>{
+      if(success){
+        this.setState({
+          adyacentes: response['ListaAdyacentes']
+        })
+      }
+    });
   }
 
   render() {
@@ -162,6 +165,7 @@ class Game extends React.Component {
         <Board 
           grid={this.state.grid}
           onOriginSelected = {!this.state.origin ? this.onOriginSelected : undefined} 
+          origin={this.state.origin}
         />
       </div>
       <div className='movementsPanel'>

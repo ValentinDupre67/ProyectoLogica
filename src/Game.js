@@ -96,7 +96,7 @@ class Game extends React.Component {
     //const queryS = "flick(" + gridS + "," + color + ", Grid)"+", gameStatus(Grid, Winner).";
     // flick3(Grid,F,C,ColorNuevo,FGrid,ListaAdyacentes):-
    
-    const queryS = "flick3(" + gridS +","+ 1 +","+ 1 +","+ color +",Grid, ListaAdyacentes)";
+    const queryS = "flick(" + gridS +","+ 1 +","+ 1 +","+ color +",Grid, ListaAdyacentes)";
     this.setState({
       waiting: true
     });

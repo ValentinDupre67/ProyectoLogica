@@ -17,12 +17,12 @@ const colors = ["r", "v", "p", "g", "b", "y"];  // red, violet, pink, green, blu
 
 export function colorToCss(color) {
   switch (color) {
-    case "r": return "red";
-    case "v": return "violet";
-    case "p": return "pink";
-    case "g": return "green";
-    case "b": return "blue";
-    case "y": return "yellow";
+    case "r": return "#f38630";
+    case "v": return "#67917a";
+    case "p": return "#170409";
+    case "g": return "#b8af03";
+    case "b": return "#ccbf82";
+    case "y": return "#e33258";
   }
   return color;
 }
@@ -51,6 +51,7 @@ class Game extends React.Component {
       complete: false,  // true if game is complete, false otherwise
       waiting: false,
       movements: [],
+      adyacentes: [],
     };
     this.handleClick = this.handleClick.bind(this);
     this.handlePengineCreate = this.handlePengineCreate.bind(this);
@@ -109,6 +110,9 @@ class Game extends React.Component {
           waiting: false,
           complete: response['Winner']
         });
+        if(this.state.adyacentes.length == 196){
+          this.state.complete = true;
+        }
       } else {
         // Prolog query will fail when the clicked color coincides with that in the top left cell.
         this.setState({
@@ -124,7 +128,6 @@ class Game extends React.Component {
       return null;
     }
     return (
-
       <div className='Conteiner'>
       <div className="game">
         <div className="leftPanel">
@@ -140,11 +143,10 @@ class Game extends React.Component {
           <div className="turnsPanel">
             <div className="turnsLab">Turns</div>
             <div className="turnsNum">{this.state.turns}</div>
-          </div>
-          <div className='Historial'>
-              
-          </div>
-          <div className='Capturados'>
+          </div>             
+          <div className='capturedPanel'>
+              <div className='capturedLab'>Captured</div>
+              <div className='capturedNum'>{this.state.adyacentes.length}</div>
           </div>
           
         </div>

@@ -1,6 +1,11 @@
+html{height: 100%;
+
+}
+
 body {
   font: 14px "Century Gothic", Futura, sans-serif;
   margin: 20px;
+  background-image: linear-gradient(rgb(240, 144, 160),black);
 }
 
 .game {
@@ -48,6 +53,25 @@ body {
 }
 
 .turnsNum {
+  margin-top: 10px;
+}
+
+.capturedPanel{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 40px;
+  font-size: 20px;
+  color: rgb(225, 39, 10);
+}
+
+
+
+.capturedLab {
+  text-transform: uppercase;
+}
+
+.capturedNum{
   margin-top: 10px;
 }
 

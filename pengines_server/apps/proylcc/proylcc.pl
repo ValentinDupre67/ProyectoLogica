@@ -21,25 +21,6 @@
 	]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% flick(+Grid, +Color, -FGrid)
-%
-% FGrid es el resultado de hacer 'flick' de la grilla Grid con el color Color.
-% Retorna false si Color coincide con el color de la celda superior izquierda de la grilla. 
-
-flick(Grid, Color, FGrid):-
-	Grid = [F|Fs],
-	F = [X|Xs],
-	Color \= X,
-	FGrid = [[Color|Xs]|Fs].
-
-
-%
-% gameStatus(+Grid, +Winner)
-%
-% Retorna Winner que es el estado que indica si el juego ha sido completado.
-
-%gameStatus(Grid,Winner):- 
 	
 %Este flick2 sirve para posicionarnos y nos da la posibilidad de cambiar el elemento viejo en esa posicion
 
@@ -72,9 +53,7 @@ buscar_Color_En_Grilla(F,C,Grid,NewFila,ElemAd):-
 resta(Numero,Resultado):- Resultado is Numero-1.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-/*
- * Este metodo  
- * */
+
 adyacenteUp(-1,_,_,_,Grid,Grid).
 
 adyacenteUp(F,C,ColorAl,_,Grid,Grid):-    
@@ -170,18 +149,11 @@ adyC(F,C,Grilla,ColorOriginal):-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 /*METODO CASCARA AdyacentesC(Grilla,F,C,ListaAdyacentes) => Devuelve
- * una lista con los adyacentes de F,C, utiliza adyAux para hacer todo el trabajo*/
-
-
-/*
-adyacentesC(Grilla, F, C, ListaAdyacentes):-
-    getColor(F,C,Grilla,ColorOriginal), %obtenes el color con el cual empezas
-    adyUp(Grilla,F,C,ColorOriginal,[],ListaAdyacentes).
-*/
+ * una lista con los adyacentes de F,C, utiliza adyUp, adyDown, adyDer, adyIzq para hacer todo el trabajo*/
 
 adyacentesC(Grilla, F, C, ListaAdyacentes):-
     getColor(F,C,Grilla,ColorOriginal), %obtenes el color con el cual empezas
-    adyUp(Grilla,F,C,ColorOriginal,[],ListaAdyacentesUp),
+    adyUp(Grilla,F,C,ColorOriginal,[],ListaAdyacentesUp), 
     FDown is F+1,
     adyDown(Grilla,FDown,C,ColorOriginal,ListaAdyacentesUp,ListaAdyacentesDown),
     Cder is C+1,
@@ -190,7 +162,6 @@ adyacentesC(Grilla, F, C, ListaAdyacentes):-
     adyIzq(Grilla,F,Cizq,ColorOriginal,ListaAdyacentesDer,ListaAdyacentes).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 %CASO BASE ME FUI DE LA GRILLA
 adyUp(_Grilla,-1,_C,_ColorOriginal,LVisi,LVisi).
@@ -202,8 +173,6 @@ adyUp(Grilla,F,C,ColorOriginal,LVisi,LVisi):-
   
 %CASO BASE F,C YA ES MIEMBRO => NO ACTUALIZO LA LISTA
 adyUp(_Grilla,F,C,_ColorOriginal,LVisi,LVisi):-
- %   getColor(F,C,Grilla,ColorNuevo),
- %   ColorNuevo = ColorOriginal,
     member([F,C],LVisi).
 
 %
@@ -226,9 +195,7 @@ adyUp(Grilla,F,C,ColorOriginal,LVisi,LVisiUp2):-
 
 %Caso BASE Nos salimos de la grilla
 adyDer([X|_Xs],_F,L,_ColorOriginal,LVisi,LVisi):-
-    length(X,L). %Obtenemos la longitud de la primera fila de la Grilla
-	%C is L-1.% CONSULTAR QUE NUMERO O QUE EXPRESION USAR ACA
-    %C  L. %??
+    length(X,L). %Obtenemos la longitud de la primera fila de la Grilla es igual a la Columna si L es 5 y C es 5 entonces me fui de la grilla
 
 %CASO BASE NO UNIFICAN LOS COLORES 
 adyDer(Grilla,F,C,ColorOriginal,LVisi,LVisi):-
@@ -236,10 +203,7 @@ adyDer(Grilla,F,C,ColorOriginal,LVisi,LVisi):-
     ColorNuevo \= ColorOriginal.
 
 %CASO BASE YA ES MEMBER
-
 adyDer(Grilla,F,C,ColorOriginal,LVisi,LVisi):-
-    getColor(F,C,Grilla,ColorNuevo),
-    ColorNuevo = ColorOriginal,
     member([F,C], LVisi).
 
 %RECORDAR que F = FOriginal y C = COriginal+1
@@ -269,10 +233,7 @@ adyDown(Grilla,F,C,ColorOriginal,LVisi,LVisi):-
 
 %CASO BASE F,C YA ES MIEMBRO => NO ACTUALIZO LA LISTA
 adyDown(_Grilla,F,C,_ColorOriginal,LVisi,LVisi):-
- %   getColor(F,C,Grilla,ColorNuevo),
- %   ColorNuevo = ColorOriginal,
     member([F,C],LVisi).
-
 
 %Caso recursivo
 adyDown(Grilla,F,C,ColorOriginal,LVisi,LVisiDown2):-
@@ -302,8 +263,6 @@ adyIzq(Grilla,F,C,ColorOriginal,LVisi,LVisi):-
 
 %Caso base F,C Ya es miembro => No actualizo lista visitados
 adyIzq(_Grilla,F,C,_ColorOriginal,LVisi,LVisi):-
- %   getColor(F,C,Grilla,ColorNuevo),
- %   ColorNuevo = ColorOriginal,
     member([F,C],LVisi).
 
 %Caso recursivo

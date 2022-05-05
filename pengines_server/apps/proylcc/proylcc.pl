@@ -1,7 +1,6 @@
 :- module(proylcc, 
 	[  
-		flick/3,
-		flick3/6,
+		flick/6,
 		getColor/4,
 		adyC/4,
 		adyacentesC/4,
@@ -25,7 +24,13 @@
 %Este flick2 sirve para posicionarnos y nos da la posibilidad de cambiar el elemento viejo en esa posicion
 
 %VAMO A ver
-flick3(Grid,F,C,ColorNuevo,FGrid,ListaAdyacentes):-
+
+%Caso en el que se toca el mismo color, entonces no hacemos laburar demas a prolog tuki
+flick(Grid,F,C,Color,Grid,_ListaAdyacentes):-
+    getColor(F,C,Grid,Color).
+
+%flick(+Grid,+F,+C,+ColorNuevo,-FGrid,-ListaAdyacentes) Hace el trabajo sucio de pintar todo y devolver lista de adyacentes
+flick(Grid,F,C,ColorNuevo,FGrid,ListaAdyacentes):-
     getColor(F,C,Grid,ColorOriginal),
     pintar(F,C,ColorOriginal,ColorNuevo,Grid,FGrid),
     adyacentesC(FGrid,F,C,ListaAdyacentes).
@@ -148,7 +153,7 @@ adyC(F,C,Grilla,ColorOriginal):-
     ColorNuevo = ColorOriginal.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-/*METODO CASCARA AdyacentesC(Grilla,F,C,ListaAdyacentes) => Devuelve
+/*METODO CASCARA adyacentesC(+Grilla,+F,+C,-ListaAdyacentes) => Devuelve
  * una lista con los adyacentes de F,C, utiliza adyUp, adyDown, adyDer, adyIzq para hacer todo el trabajo*/
 
 adyacentesC(Grilla, F, C, ListaAdyacentes):-
@@ -203,7 +208,7 @@ adyDer(Grilla,F,C,ColorOriginal,LVisi,LVisi):-
     ColorNuevo \= ColorOriginal.
 
 %CASO BASE YA ES MEMBER
-adyDer(Grilla,F,C,ColorOriginal,LVisi,LVisi):-
+adyDer(_Grilla,F,C,_ColorOriginal,LVisi,LVisi):-
     member([F,C], LVisi).
 
 %RECORDAR que F = FOriginal y C = COriginal+1

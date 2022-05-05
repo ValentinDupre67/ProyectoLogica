@@ -46,6 +46,7 @@ class Game extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      origin: undefined,
       turns: 0,
       grid: null,
       complete: false,  // true if game is complete, false otherwise
@@ -54,6 +55,7 @@ class Game extends React.Component {
       adyacentes: [],
     };
     this.handleClick = this.handleClick.bind(this);
+    this.onOriginSelected = this.onOriginSelected.bind(this);
     this.handlePengineCreate = this.handlePengineCreate.bind(this);
     this.pengine = new PengineClient(this.handlePengineCreate);
   }
@@ -97,8 +99,9 @@ class Game extends React.Component {
 
     //const queryS = "flick(" + gridS + "," + color + ", Grid)"+", gameStatus(Grid, Winner).";
     // flick3(Grid,F,C,ColorNuevo,FGrid,ListaAdyacentes):-
-   
-    const queryS = "flick(" + gridS +","+ 1 +","+ 1 +","+ color +",Grid, ListaAdyacentes)";
+   const Fila = this.state.origin[0];
+   const Columna = this.state.origin[1];
+    const queryS = "flick(" + gridS +","+ Fila +","+ Columna +","+ color +",Grid, ListaAdyacentes)";
     this.setState({
       waiting: true
     });
@@ -122,6 +125,12 @@ class Game extends React.Component {
     });
   }
 
+
+  onOriginSelected(pos){
+    this.setState({
+      origin:pos
+    })
+  }
 
   render() {
     if (this.state.grid === null) {
@@ -150,7 +159,10 @@ class Game extends React.Component {
           </div>
           
         </div>
-        <Board grid={this.state.grid} />
+        <Board 
+          grid={this.state.grid}
+          onOriginSelected = {!this.state.origin ? this.onOriginSelected : undefined} 
+        />
       </div>
       <div className='movementsPanel'>
             <div className='movementsAux'>Movement</div>

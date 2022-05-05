@@ -109,7 +109,6 @@ class Game extends React.Component {
           turns: this.state.turns + 1,
           adyacentes: response['ListaAdyacentes'],
           waiting: false,
-          complete: response['Winner']
         });
         if(this.state.adyacentes.length == 196){
           this.state.complete = true;

@@ -26,7 +26,7 @@
 %VAMO A ver
 
 %Caso en el que se toca el mismo color, entonces no hacemos laburar demas a prolog tuki
-flick(Grid,F,C,Color,Grid,ListaAdyacentes):-
+flick(Grid,F,C,Color,Grid,_ListaAdyacentes):-
     getColor(F,C,Grid,Color).
 
 %flick(+Grid,+F,+C,+ColorNuevo,-FGrid,-ListaAdyacentes) Hace el trabajo sucio de pintar todo y devolver lista de adyacentes

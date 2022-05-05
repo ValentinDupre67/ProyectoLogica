@@ -58,11 +58,12 @@ class Game extends React.Component {
   }
 
   handlePengineCreate() {
-    const queryS = 'init(Grid)';    
+    const queryS = 'init(Grid),adyacentesC(Grid,0,0,ListaAdyacentes)';    
     this.pengine.query(queryS, (success, response) => {
       if (success) {
         this.setState({
-          grid: response['Grid']
+          grid: response['Grid'],
+          adyacentes: response['ListaAdyacentes']
         });
       }
     });

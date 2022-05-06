@@ -18,12 +18,12 @@ const colors = ["r", "v", "p", "g", "b", "y"];  // red, violet, pink, green, blu
 
 export function colorToCss(color) {
   switch (color) {
-    case "r": return "#f8b195";
-    case "v": return "#f67280";
-    case "p": return "#c06c84";
-    case "g": return "#6c5b7b";
-    case "b": return "#355c7d";
-    case "y": return "#ccc68d";
+    case "r": return "#f38630";
+    case "v": return "#67917a";
+    case "p": return "#170409";
+    case "g": return "#b8af03";
+    case "b": return "#ccbf82";
+    case "y": return "#e33258";
   }
   return color;
 }

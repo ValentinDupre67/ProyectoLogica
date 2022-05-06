@@ -74,7 +74,7 @@ resta(Numero,Resultado):- Resultado is Numero-1.
 %Caso base me fui de la grilla 
 adyacenteUp(-1,_,_,_,Grid,Grid).
 
-%Caso base cuando el color no unifica, ya que es el color que no tengo que reemplazar  
+%Caso base cuando el color no unifica, no me tengo que seguir moviendo hacia arriba    
 adyacenteUp(F,C,ColorAl,_,Grid,Grid):-    
     buscar_Color_En_Grilla(F,C,Grid,_,ElemAd),    
 	ElemAd \= ColorAl.
@@ -93,7 +93,7 @@ adyacenteUp(F,C,ColorAl,ColorNo,Grid,NewGrid):-
 %Caso base me fui de la grilla
 adyacenteLeft(_,0,_,_,Grid,Grid).
 
-%Caso base cuando el color no unifica, ya que es el color que no tengo que reemplazar 
+%Caso base cuando el color no unifica, no me tengo que seguir moviendo a la izquierda 
 adyacenteLeft(F,C,ColorAl,_,Grid,Grid):-
     succ(Cmenos,C),
     buscar_Color_En_Grilla(F,Cmenos,Grid,_,ElemAd),
@@ -116,7 +116,7 @@ adyacenteRight(_,CantCol,_,_,[X|Xs],[X|Xs]):-
     length(X,L),
     CantCol is L-1.
 
-%Caso base cuando el color no unifica, ya que es el color que no tengo que reemplazar
+%Caso base cuando el color no unifica, no me tengo que seguir moviendo a la derecha 
 adyacenteRight(F,C,ColorAl,_,Grid,Grid):-
     succ(C,Cmas),
     buscar_Color_En_Grilla(F,Cmas,Grid,_,ElemAd),
@@ -139,7 +139,7 @@ adyacenteDown(CnatFil,_,_,_,Grid,Grid):-
     length(Grid,L),
     CnatFil is L-1.
 
-%Caso base cuando el color no unifica, ya que es el color que no tengo que reemplazar
+%Caso base cuando el color no unifica, no me tengo que seguir moviendo hacia abajo 
 adyacenteDown(F,C,ColorAl,_,Grid,Grid):-
     succ(F,Fmas),
     buscar_Color_En_Grilla(Fmas,C,Grid,_,ElemAd),

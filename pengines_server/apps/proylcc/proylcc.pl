@@ -20,14 +20,11 @@
 	]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	
-%Este flick2 sirve para posicionarnos y nos da la posibilidad de cambiar el elemento viejo en esa posicion
-
-%VAMO A ver
 
 %Caso en el que se toca el mismo color, entonces no hacemos laburar demas a prolog tuki
-flick(Grid,F,C,Color,Grid,_ListaAdyacentes):-
-    getColor(F,C,Grid,Color).
+flick(Grid,F,C,Color,Grid,ListaAdyacentes):-
+    getColor(F,C,Grid,Color),
+    adyacentesC(Grid,F,C,ListaAdyacentes).
 
 %flick(+Grid,+F,+C,+ColorNuevo,-FGrid,-ListaAdyacentes) Hace el trabajo sucio de pintar todo y devolver lista de adyacentes
 flick(Grid,F,C,ColorNuevo,FGrid,ListaAdyacentes):-
@@ -35,6 +32,9 @@ flick(Grid,F,C,ColorNuevo,FGrid,ListaAdyacentes):-
     pintar(F,C,ColorOriginal,ColorNuevo,Grid,FGrid),
     adyacentesC(FGrid,F,C,ListaAdyacentes).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Pintar la grilla
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Este método cáscara se encarga de ir disparando los distintos adyacentes para que vayan
 %pintando cada cuadradito a medida que va recorriendo la grilla.
 %El método consta a su vez de cuatro métodos más, que se encargan de ir en las
@@ -156,7 +156,9 @@ adyacenteDown(F,C,ColorAl,ColorNo,Grid,NewGrid):-
  	adyacenteDown(Fmas,C,ColorAl,ColorNo,NewGrid3,NewGrid).
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
+%Obtener lista de adyacentes
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%Get color devuelve el color que en la Fila F Columna C de grilla
 getColor(F,C,Grilla,Color):-

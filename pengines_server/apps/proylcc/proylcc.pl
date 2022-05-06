@@ -35,9 +35,8 @@ flick(Grid,F,C,ColorNuevo,FGrid,ListaAdyacentes):-
     pintar(F,C,ColorOriginal,ColorNuevo,Grid,FGrid),
     adyacentesC(FGrid,F,C,ListaAdyacentes).
 
-%Valen codig
-%Este método se encarga de ir pintando cada cuadradito a medida que va recorriendo
-%la grilla.
+%Este método cáscara se encarga de ir disparando los distintos adyacentes para que vayan
+%pintando cada cuadradito a medida que va recorriendo la grilla.
 %El método consta a su vez de cuatro métodos más, que se encargan de ir en las
 %distintas direcciones para así recorrer la totalidad de la grilla.
 %pintar(+F,+C,+ColorAl,+ColorNo,+Grid,-NewGrid) => devuelve una grilla con todos los cambios hechos
@@ -71,13 +70,16 @@ buscar_Color_En_Grilla(F,C,Grid,NewFila,ElemAd):-
 resta(Numero,Resultado):- Resultado is Numero-1.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
+
+%Caso base me fui de la grilla 
 adyacenteUp(-1,_,_,_,Grid,Grid).
 
+%Caso base cuando el color no unifica, ya que es el color que no tengo que reemplazar  
 adyacenteUp(F,C,ColorAl,_,Grid,Grid):-    
     buscar_Color_En_Grilla(F,C,Grid,_,ElemAd),    
 	ElemAd \= ColorAl.
 
+%Caso recursivo primero pintó la posición actual y luego voy subiendo en la grilla 
 adyacenteUp(F,C,ColorAl,ColorNo,Grid,NewGrid):- 
     buscar_Color_En_Grilla(F,C,Grid,NewFila,ElemAd),
 	ElemAd == ColorAl,    
@@ -88,13 +90,16 @@ adyacenteUp(F,C,ColorAl,ColorNo,Grid,NewGrid):-
  	adyacenteUp(Fmenos,C,ColorAl,ColorNo,NewGrid3,NewGrid).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Caso base me fui de la grilla
 adyacenteLeft(_,0,_,_,Grid,Grid).
 
+%Caso base cuando el color no unifica, ya que es el color que no tengo que reemplazar 
 adyacenteLeft(F,C,ColorAl,_,Grid,Grid):-
     succ(Cmenos,C),
     buscar_Color_En_Grilla(F,Cmenos,Grid,_,ElemAd),
 	ElemAd \= ColorAl.
 
+%Caso recursivo primero me muevo a la izquierda y luego pinto 
 adyacenteLeft(F,C,ColorAl,ColorNo,Grid,NewGrid):-
 	succ(Cmenos,C),
     buscar_Color_En_Grilla(F,Cmenos,Grid,NewFila,ElemAd),
@@ -106,15 +111,18 @@ adyacenteLeft(F,C,ColorAl,ColorNo,Grid,NewGrid):-
    	adyacenteLeft(F,Cmenos,ColorAl,ColorNo,NewGrid3,NewGrid).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Caso base me fui de la grilla
 adyacenteRight(_,CantCol,_,_,[X|Xs],[X|Xs]):-
     length(X,L),
     CantCol is L-1.
 
+%Caso base cuando el color no unifica, ya que es el color que no tengo que reemplazar
 adyacenteRight(F,C,ColorAl,_,Grid,Grid):-
     succ(C,Cmas),
     buscar_Color_En_Grilla(F,Cmas,Grid,_,ElemAd),
 	ElemAd \= ColorAl.
 
+%Caso recursivo primero me muevo a la derecha y luego pinto  
 adyacenteRight(F,C,ColorAl,ColorNo,Grid,NewGrid):-
 	succ(C,Cmas),
     buscar_Color_En_Grilla(F,Cmas,Grid,NewFila,ElemAd),
@@ -126,15 +134,18 @@ adyacenteRight(F,C,ColorAl,ColorNo,Grid,NewGrid):-
  	adyacenteRight(F,Cmas,ColorAl,ColorNo,NewGrid3,NewGrid).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Caso base me fui de la grilla
 adyacenteDown(CnatFil,_,_,_,Grid,Grid):-
     length(Grid,L),
     CnatFil is L-1.
 
+%Caso base cuando el color no unifica, ya que es el color que no tengo que reemplazar
 adyacenteDown(F,C,ColorAl,_,Grid,Grid):-
     succ(F,Fmas),
     buscar_Color_En_Grilla(Fmas,C,Grid,_,ElemAd),
 	ElemAd \= ColorAl.
 
+%Caso recursivo primero me muevo hacia abajo y luego pinto 
 adyacenteDown(F,C,ColorAl,ColorNo,Grid,NewGrid):-
     succ(F,Fmas),
     buscar_Color_En_Grilla(Fmas,C,Grid,NewFila,ElemAd),
@@ -146,8 +157,6 @@ adyacenteDown(F,C,ColorAl,ColorNo,Grid,NewGrid):-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	 
-
-%Rama codig
 
 %%Get color devuelve el color que en la Fila F Columna C de grilla
 getColor(F,C,Grilla,Color):-

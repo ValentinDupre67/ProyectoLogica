@@ -4,6 +4,7 @@ import Board from './Board';
 import Square from './Square';
 import { useState } from 'react/cjs/react.production.min';
 import userEvent from '@testing-library/user-event';
+import swal from 'sweetalert';
 
 /**
  * List of colors.
@@ -17,12 +18,12 @@ const colors = ["r", "v", "p", "g", "b", "y"];  // red, violet, pink, green, blu
 
 export function colorToCss(color) {
   switch (color) {
-    case "r": return "#f38630";
-    case "v": return "#67917a";
-    case "p": return "#170409";
-    case "g": return "#b8af03";
-    case "b": return "#ccbf82";
-    case "y": return "#e33258";
+    case "r": return "#f8b195";
+    case "v": return "#f67280";
+    case "p": return "#c06c84";
+    case "g": return "#6c5b7b";
+    case "b": return "#355c7d";
+    case "y": return "#ccc68d";
   }
   return color;
 }
@@ -105,8 +106,9 @@ class Game extends React.Component {
         });
         if(this.state.adyacentes.length === 196){
           this.setState({
-            complete: true
+            complete: true,
           })
+          this.mostrarAlerta();
         }
       } else {
         // Prolog query will fail when the clicked color coincides with that in the top left cell.
@@ -117,6 +119,24 @@ class Game extends React.Component {
     });
   }
 
+  mostrarAlerta=()=>{
+    swal({
+      title: "¡¡Enhorabuena!! Has ganado",
+      text: "Terminaste el juego en "+this.state.turns+" turnos, eres un capo bien ahí UwU ;)",
+      buttons: {
+        restart: {
+          text: "Volver a intentarlo",
+          value: "restart",
+        },
+      },
+    })
+    .then((value) => {
+      if (value==="restart"){
+        window.location.reload()
+      }
+        });
+  }
+  
 
   onOriginSelected(pos){
     this.setState({
@@ -153,11 +173,11 @@ class Game extends React.Component {
               />)}
           </div>
           <div className="turnsPanel">
-            <div className="turnsLab">Turns</div>
+            <div className="turnsLab">Turnos</div>
             <div className="turnsNum">{this.state.turns}</div>
           </div>             
           <div className='capturedPanel'>
-              <div className='capturedLab'>Captured</div>
+              <div className='capturedLab'>Capturados</div>
               <div className='capturedNum'>{this.state.adyacentes.length}</div>
           </div>
           
@@ -169,7 +189,7 @@ class Game extends React.Component {
         />
       </div>
       <div className='movementsPanel'>
-            <div className='movementsAux'>Movement</div>
+            <div className='movementsAux'>Historial</div>
             <div className='movements'> 
             {this.state.movements.map((colors, i) =>
               <Square 

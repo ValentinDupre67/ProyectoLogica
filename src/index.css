@@ -5,7 +5,7 @@ html{height: 100%;
 body {
   font: 14px "Century Gothic", Futura, sans-serif;
   margin: 20px;
-  background-image: linear-gradient(rgb(240, 144, 160),black);
+  background-image: linear-gradient(rgb(247, 88, 88),rgb(66, 99, 250));
 }
 
 .game {
@@ -45,7 +45,7 @@ body {
   align-items: center;
   margin-top: 40px;
   font-size: 20px;
-  color: darkblue;
+  color: rgb(0, 0, 0);
 }
 
 .turnsLab {
@@ -62,9 +62,8 @@ body {
   align-items: center;
   margin-top: 40px;
   font-size: 20px;
-  color: rgb(225, 39, 10);
+  color: rgb(0, 0, 0);
 }
-
 
 
 .capturedLab {
@@ -81,7 +80,7 @@ body {
   align-items: center;
   margin-top: 40px;
   font-size: 20px;
-  color: blueviolet;
+  color: rgb(0, 0, 0);
 }
 
 .movementsAux{

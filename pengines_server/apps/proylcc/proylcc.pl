@@ -36,29 +36,42 @@ flick(Grid,F,C,ColorNuevo,FGrid,ListaAdyacentes):-
     adyacentesC(FGrid,F,C,ListaAdyacentes).
 
 %Valen codig
-
+%Este método se encarga de ir pintando cada cuadradito a medida que va recorriendo
+%la grilla.
+%El método consta a su vez de cuatro métodos más, que se encargan de ir en las
+%distintas direcciones para así recorrer la totalidad de la grilla.
+%pintar(+F,+C,+ColorAl,+ColorNo,+Grid,-NewGrid) => devuelve una grilla con todos los cambios hechos
 pintar(F,C,ColorAl,ColorNo,Grid,NewGrid):-
    	adyacenteUp(F,C,ColorAl,ColorNo,Grid,NewGrid2),
     adyacenteDown(F,C,ColorAl,ColorNo,NewGrid2,NewGrid3),
     adyacenteLeft(F,C,ColorAl,ColorNo,NewGrid3,NewGrid4),
 	adyacenteRight(F,C,ColorAl,ColorNo,NewGrid4,NewGrid).
 
+%Este método es el que se encarga de reemplazar un color por otro en una de las filas de la grilla.
+% replace_nth0(+List, +Index, +OldElem, +NewElem, -NewList) => devuelve una lista con el color cambiado. 
 replace_nth0(List, Index, OldElem, NewElem, NewList) :- 
    nth0(Index,List,OldElem,Transfer),
    nth0(Index,NewList,NewElem,Transfer).
 
+%Este método es el que se encarga de reemplazar un color por otro en la grilla.
+% remplazar_Color_En_Grilla(+Lista,+Grid,+F,+C,+ElemAd,+ColorNo,-NuevaGrid) => devuelve la nueva grilla con un color cambiado
 remplazar_Color_En_Grilla(Lista,Grid,F,C,ElemAd,ColorNo,NuevaGrid):-
     replace_nth0(Lista,C,ElemAd,ColorNo,NuevaFila),
     replace_nth0(Grid,F,Lista,NuevaFila,NuevaGrid).
 
+%Este método dado un F(fila) y un C(columna), busca el elemento dentro de la grilla,
+% y te lo devuelve junto con la fila donde se encuentra guardado.
+%buscar_Color_En_Grilla(+F,+C,+Grid,-NewFila,-ElemAd) => devuelve el color a buscar y la fila que lo contiene. 
 buscar_Color_En_Grilla(F,C,Grid,NewFila,ElemAd):-
 	nth0(F,Grid,NewFila),
     nth0(C,NewFila,ElemAd).
 
+% Este método se encarga de decrementar en 1 el número que se le da como parámetro.
+% resta(+Numero,-Resultado) => devuelve el número decrementado en uno.
 resta(Numero,Resultado):- Resultado is Numero-1.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+% 
 adyacenteUp(-1,_,_,_,Grid,Grid).
 
 adyacenteUp(F,C,ColorAl,_,Grid,Grid):-    

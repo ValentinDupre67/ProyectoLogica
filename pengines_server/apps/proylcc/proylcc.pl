@@ -31,6 +31,7 @@ flick(Grid,F,C,ColorNuevo,FGrid,ListaAdyacentes):-
     getColor(F,C,Grid,ColorOriginal),
     pintar(F,C,ColorOriginal,ColorNuevo,Grid,FGrid),
     adyacentesC(FGrid,F,C,ListaAdyacentes).
+    %adyCStar("["F+","+C"]",FGrid,ListaAdyacnetes).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Pintar la grilla

@@ -310,3 +310,87 @@ adyIzq(Grilla,F,C,ColorOriginal,LVisi,LVisiIzq2):-
     adyIzq(Grilla,F,CIzq,ColorOriginal,LVisiDown,LVisiIzq2).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%CODIGO CATEDRA
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/*
+ * adyCStar(Origin, +Grid, -Res)
+ * Calcula el conjunto de celdas adyacentesC* de la celda Origin en la grilla Grid
+ * siguiendo una estrategia de propagación o expansión.
+ */
+
+adyCStar(Origin, Grid, Res) :-
+    adyCStarSpread([Origin], [], Grid, Res).
+
+/*
+ * adyCStarSpread(+Pend, +Vis, +Grid, -Res)
+ * Pend: por "pendientes", inicialmente es la lista [Origin], y en general es 
+ * el conjunto de celdas adyacentesC* a Origin que aún no fueron consideradas.
+ * Vis: por "visitados", inicialmente [], son las celdas adyacentesC* a la Origen 
+ * que ya fueron consideradas.
+ * Grid: idem adyCStar
+ * Res: idem adyCStar
+ * En cada paso se selecciona una celda de las pendientes, se pasa a visitados, y
+ * se agregan a pendientes todas aquellas adyacentes a la celda, del mismo color, que no estén
+ * ya ni en pendientes ni visitados.
+ */
+
+adyCStarSpread([], Vis, _Grid, Vis).
+
+adyCStarSpread(Pend, Vis, Grid, Res):-
+    Pend = [P|Ps],
+    findall(A, 
+	        (
+    	        adyC(P, Grid, A),
+        	    not(member(A, Pend)),
+            	not(member(A, Vis))
+	        ), 
+            AdyCP),
+    append(AdyCP, Ps, NPend),
+    adyCStarSpread(NPend, [P|Vis], Grid, Res).
+
+/* 
+ * adyC(+P, +Grid, -A)
+ */
+
+adyC(P, Grid, A):-
+    ady(P, Grid, A),
+    color(P, Grid, C),
+    color(A, Grid, C).
+
+/* 
+ * ady(+P, +Grid, -A)
+ */
+
+ady([X, Y], Grid, [X1, Y]):-
+    length(Grid, L),
+    X < L - 1,
+    X1 is X + 1.
+
+ady([X, Y], _Grid, [X1, Y]):-
+    X > 0,
+    X1 is X - 1.
+
+ady([X, Y], Grid, [X, Y1]):-
+    Grid = [F|_],
+    length(F, L),
+    Y < L - 1,
+    Y1 is Y + 1.
+
+ady([X, Y], _Grid, [X, Y1]):-
+    Y > 0,
+    Y1 is Y - 1.
+
+
+/* 
+ * color(P, Grid, C)
+ */
+
+color([X,Y], Grid, C):-
+    nth0(X, Grid, F),
+    nth0(Y, F, C).    

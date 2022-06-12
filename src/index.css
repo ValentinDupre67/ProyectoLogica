@@ -111,3 +111,41 @@ body {
 .origin{
   border: 2px solid white;
 }
+
+.rightPanel{
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+}
+
+.PEinput input{
+  font-size:larger;
+  width: 45px;
+  height: 42px;
+  line-height: 1.65;
+  float:left;
+  display:block;
+  padding: 0;
+  margin: 15px;
+  padding-left: 20px;
+  border: 2px solid black;
+}
+
+.PEbutton button{
+  border: 2px solid black;
+  background-color: aquamarine;
+  border: none;
+  color: black;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 15px;
+  transition-duration: 0.4s;
+}
+
+.PEbutton button:hover{
+  background-color: #4CAF50; /* Green */
+  color: white;
+}

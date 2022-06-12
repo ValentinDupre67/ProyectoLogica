@@ -50,7 +50,7 @@ class Game extends React.Component {
   }
 
   handlePengineCreate() {
-    const queryS = 'init(Grid),adyacentesC(Grid,0,0,ListaAdyacentes)';    
+    const queryS = 'init(Grid),adyCStar([0,0],Grid,ListaAdyacentes)';    
     this.pengine.query(queryS, (success, response) => {
       if (success) {
         this.setState({
@@ -137,7 +137,7 @@ class Game extends React.Component {
         });
   }
   
-
+//adyCStar([F,C],FGrid,ListaAdyacentes).
   onOriginSelected(pos){
     this.setState({
       origin:pos
@@ -145,7 +145,7 @@ class Game extends React.Component {
     const gridS = JSON.stringify(this.state.grid).replaceAll('"', "");
     const Fila = pos[0];
     const Columna = pos[1];
-    const queryS = "adyacentesC("+gridS+","+Fila+","+Columna+",ListaAdyacentes)";
+    const queryS = "adyCStar(["+Fila+","+Columna+"],"+gridS+",ListaAdyacentes)";
     this.pengine.query(queryS, (success,response)=>{
       if(success){
         this.setState({
@@ -153,6 +153,10 @@ class Game extends React.Component {
         })
       }
     });
+  }
+
+  ayuda(profundidad){
+    console.log(profundidad+"nashe");
   }
 
   render() {
@@ -187,6 +191,17 @@ class Game extends React.Component {
           onOriginSelected = {!this.state.origin ? this.onOriginSelected : undefined} 
           origin={this.state.origin}
         />
+        <div className='rightPanel'>
+          <div className='PEinput'>
+            <input type="number" id="Profundidad" name="profundidad" min="1" max="10"></input>
+          </div>
+          <div className='PEbutton'>
+            <button type='button' onClick={() => this.ayuda(document.getElementById("Profundidad").value)}>Ayuda!</button>
+          </div>
+          <div className='resultAyuda'>
+
+          </div>
+        </div>
       </div>
       <div className='movementsPanel'>
             <div className='movementsAux'>Historial</div>

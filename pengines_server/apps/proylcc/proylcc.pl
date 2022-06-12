@@ -1,22 +1,8 @@
 :- module(proylcc, 
 	[  
 		flick/6,
-		getColor/4,
-		adyC/4,
 		adyacentesC/4,
-		adyUp/6,
-		adyDer/6,
-		adyDown/6,
-		adyIzq/6,
-		pintar/6,
-		replace_nth0/5,
-		remplazar_Color_En_Grilla/7,
-		buscar_Color_En_Grilla/5,
-		resta/2,
-		adyacenteUp/6,
-		adyacenteDown/6,
-		adyacenteLeft/6,
-		adyacenteRight/6
+        adyCStar/3
 	]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -30,8 +16,8 @@ flick(Grid,F,C,Color,Grid,ListaAdyacentes):-
 flick(Grid,F,C,ColorNuevo,FGrid,ListaAdyacentes):-
     getColor(F,C,Grid,ColorOriginal),
     pintar(F,C,ColorOriginal,ColorNuevo,Grid,FGrid),
-    adyacentesC(FGrid,F,C,ListaAdyacentes).
-    %adyCStar("["F+","+C"]",FGrid,ListaAdyacnetes).
+    %adyacentesC(FGrid,F,C,ListaAdyacentes).
+    adyCStar([F,C],FGrid,ListaAdyacentes).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Pintar la grilla

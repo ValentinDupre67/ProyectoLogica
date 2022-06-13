@@ -161,14 +161,18 @@ class Game extends React.Component {
     const gridS = JSON.stringify(this.state.grid).replaceAll('"', ""); 
     const Fila = !this.state.origin ? 0: this.state.origin[0];
     const Columna = !this.state.origin ? 0 :this.state.origin[1];
-    const queryS = "mejorCamino(["+Fila+","+Columna+"],"+gridS+",Resultado)";
+    const queryS = "mejorCamino(["+Fila+","+Columna+"],"+gridS+","+profundidad+",Resultado)";
+    this.setState({
+      waiting: true
+    });
     this.pengine.query(queryS, (success,response)=>{
       if(success){
         this.setState({
-          adyacentes: response['Resultado']
+          capturadosAyuda: response['Resultado'],
+          waiting: false,
         })
       }
-    });
+    });    
   }
 
   render() {

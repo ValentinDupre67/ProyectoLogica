@@ -1,8 +1,8 @@
 :- module(proylcc, 
 	[  
 		flick/6,
-		adyacentesC/4,
-        adyCStar/3
+        adyCStar/3,
+        pintar/4
 	]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -14,10 +14,28 @@ flick(Grid,F,C,Color,Grid,ListaAdyacentes):-
 
 %flick(+Grid,+F,+C,+ColorNuevo,-FGrid,-ListaAdyacentes) Hace el trabajo sucio de pintar todo y devolver lista de adyacentes
 flick(Grid,F,C,ColorNuevo,FGrid,ListaAdyacentes):-
-    getColor(F,C,Grid,ColorOriginal),
-    pintar(F,C,ColorOriginal,ColorNuevo,Grid,FGrid),
-    %adyacentesC(FGrid,F,C,ListaAdyacentes).
+    %getColor(F,C,Grid,ColorOriginal),
+    %pintar(F,C,ColorOriginal,ColorNuevo,Grid,FGrid),
+    %adyacentesC(FGrid,F,C,ListaAdyacentes).   
+    pintar([F,C],ColorNuevo,Grid,FGrid),
     adyCStar([F,C],FGrid,ListaAdyacentes).
+
+%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+%&& NUEVA VERSION DEL PINTAR &&&&&&&
+%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+
+pintar([F,C],ColorN,Grid,NewGrid):-
+    adyCStar([F,C],Grid,Res),
+    pintarOptimo(ColorN,Res,Grid,NewGrid).
+ 
+  pintarOptimo(_,[],Grid,Grid).
+  pintarOptimo(ColorN,[H|T],Grid,NewGrid):- 
+      nth0(0,H,F),
+      nth0(1,H,C),
+      buscar_Color_En_Grilla(F,C,Grid,NewFila,ElemAd),
+      remplazar_Color_En_Grilla(NewFila,Grid,F,C,ElemAd,ColorN,NewGrid1),
+      pintarOptimo(ColorN,T,NewGrid1,NewGrid).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Pintar la grilla
@@ -52,9 +70,7 @@ buscar_Color_En_Grilla(F,C,Grid,NewFila,ElemAd):-
 	nth0(F,Grid,NewFila),
     nth0(C,NewFila,ElemAd).
 
-% Este método se encarga de decrementar en 1 el número que se le da como parámetro.
-% resta(+Numero,-Resultado) => devuelve el número decrementado en uno.
-resta(Numero,Resultado):- Resultado is Numero-1.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -380,3 +396,107 @@ ady([X, Y], _Grid, [X, Y1]):-
 color([X,Y], Grid, C):-
     nth0(X, Grid, F),
     nth0(Y, F, C).    
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%PEDIR AYUDA
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%structure strat(CaminoColores,CantidadCapturados,ListaAdyacentes,UltimaGrilla)
+chequearGrillaCompleta([Jugada|_Jugadas]):-
+    Jugada = strat(_CaminoColores,196,_ListaAdy,_UltGrilla),!.
+
+chequearGrillaCompleta([_Jugada|Jugadas]):-
+    chequearGrillaCompleta(Jugadas).
+    
+colores([r,v,p,g,b,y]).
+
+remover( _, [], []).
+remover( R, [R|T], T).
+remover( R, [H|T], [H|T2]) :- H \= R, remover( R, T, T2).
+
+%mejorEstrategia([F,C],Grilla,Profundidad,Resultado):-
+%    analizarCaminos([F,C],Grilla,Profundidad,PosiblesSoluciones),
+%    mejorResultado(PosiblesSoluciones,Profundidad,Resultado).
+
+mejorCamino([F,C],Grid,Profundidad,SecuenciaGanadora):-
+    %Se inicia encontrando los primeros caminos con ayuda
+    ayuda([F,C],Grid,JugadasIniciales),
+    %Ayuda bis se encarga de armar las soluciones recursivamente
+    %utilizando las estructuras generadas en ayuda
+    ayudaBis([F,C],JugadasIniciales,Profundidad,JugadasCompletas),
+    %Se recorren las distintas jugadas buscando la mejor
+    descubrirMejorJugada(JugadasCompletas,JugadaGanadora),
+    %Se obtiene la secuencia de colores del mejor camino
+    JugadaGanadora = strat(SecuenciaGanadora,_CantCaup,_Ady,_Gridd).
+
+ayuda([F,C],Grid,Resultado):-
+    adyCStar([F,C],Grid,AdyacentesActual),
+    length(AdyacentesActual,CantCapActual),
+    color([F,C],Grid,ColorActual),
+    colores(Colores),
+    remover(ColorActual,Colores,ListaColores),
+    findall(strat([Color],CantCapNew,AdyacentesNew,GridNew),(
+             member(Color,ListaColores),
+             flick(Grid,F,C,Color,GridNew,AdyacentesNew),
+             length(AdyacentesNew,CantCapNew),
+             CantCapNew>CantCapActual
+            ),Resultado).
+ 
+%Casos Base
+ayudaBis(_Origen,Jugadas,1,Jugadas):-!.
+ayudaBis(_Origen,[],_Profundidad,[]):-!.
+%Capturo Todo
+ayudaBis(_Origen,Jugadas,_Profundidad,Jugadas):-
+    chequearGrillaCompleta(Jugadas),!.
+
+%Caso Recursivo
+ayudaBis([F,C],[Jugada|Jugadas],Profundidad,JugadasCompletas):-
+	Jugada = strat(SolucionColores,CantCaptActual,_AdyCS,Grid),
+    color([F,C],Grid,ColorActual),
+    colores(Colores),
+    remover(ColorActual,Colores,ListaColores),
+    findall(strat(NewSolucionColores,NewCantCapt,NewAdyCS,NewGrid),
+            (member(ColorNuevo,ListaColores),
+            flick(Grid,F,C,ColorNuevo,NewGrid,NewAdyCS),
+            length(NewAdyCS,NewCantCapt),
+            NewCantCapt>CantCaptActual,
+            append(SolucionColores,[ColorNuevo],NewSolucionColores)
+            ),JugadasParciales),
+    %Obtenemos las otras (ramas)jugadas de este nivel
+    ayudaBis([F,C],Jugadas,Profundidad,JugadasNivelActual),
+    ProfundidadNext is Profundidad - 1,
+    %obtenemos las jugadas del proximo nivel de esta rama
+    ayudaBis([F,C],JugadasParciales,ProfundidadNext,JugadasSiguienteNivel),
+    append(JugadasNivelActual,JugadasSiguienteNivel,JugadasCompletas).
+
+
+%DescubrirMejorJugada(+JugadasCompletas, -JugadaGanadora)
+%JugadasCompletas = [Jugada|Jugadas]
+
+descubrirMejorJugada([],_JugadaGanadora).
+
+descubrirMejorJugada(JugadasCompletas,Jugada):-
+    JugadasCompletas = [Jugada|[]],
+    Jugada = strat(_Colores,_CantCapturados,_AdyCS,_Grid).
+
+descubrirMejorJugada(JugadasCompletas,JugadaGanadora):-
+    JugadasCompletas = [Jugada|Jugadas],
+    Jugadas = [NextJugada|NextJugadas],
+    Jugada = strat(_Colores,CantCapturados,_AdyCS,_Grid),
+    NextJugada = strat(_NextColores,NextCantCapturados,_NextAdyc,_NextGrid),
+    CantCapturados>NextCantCapturados,
+    descubrirMejorJugada([Jugada|NextJugadas],JugadaGanadora),!.
+
+descubrirMejorJugada(JugadasCompletas,JugadaGanadora):-
+    JugadasCompletas = [Jugada|Jugadas],
+    Jugadas = [NextJugada|NextJugadas],
+    Jugada = strat(_Colores,_CantCapturados,_AdyCS,_Grid),
+    NextJugada = strat(_NextColores,_NextCantCapturados,_NextAdyc,_NextGrid),
+	descubrirMejorJugada([NextJugada|NextJugadas],JugadaGanadora).
+    
+    
+
+

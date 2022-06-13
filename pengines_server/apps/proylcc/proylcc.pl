@@ -2,7 +2,7 @@
 	[  
 		flick/6,
         adyCStar/3,
-        mejorCamino/4,
+        mejorCamino/5,
         encontraUnCamino/3
 	]).
 
@@ -178,7 +178,7 @@ remover( R, [H|T], [H|T2]) :- H \= R, remover( R, T, T2).
 %    analizarCaminos([F,C],Grilla,Profundidad,PosiblesSoluciones),
 %    mejorResultado(PosiblesSoluciones,Profundidad,Resultado).
 
-mejorCamino([F,C],Grid,Profundidad,SecuenciaGanadora):-
+mejorCamino([F,C],Grid,Profundidad,SecuenciaGanadora,CantCapt):-
     %Se inicia encontrando los primeros caminos con ayuda
     ayuda([F,C],Grid,JugadasIniciales),
     %Ayuda bis se encarga de armar las soluciones recursivamente
@@ -187,7 +187,7 @@ mejorCamino([F,C],Grid,Profundidad,SecuenciaGanadora):-
     %Se recorren las distintas jugadas buscando la mejor
     descubrirMejorJugada(JugadasCompletas,JugadaGanadora),
     %Se obtiene la secuencia de colores del mejor camino
-    JugadaGanadora = strat(SecuenciaGanadora,_CantCaup,_Gridd).
+    JugadaGanadora = strat(SecuenciaGanadora,CantCapt,_Gridd).
 
 ayuda([F,C],Grid,Resultado):-
     adyCStar([F,C],Grid,AdyacentesActual),

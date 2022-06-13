@@ -177,9 +177,9 @@ body {
 
 .secuencia{
   display: flex;
+  flex-direction: column;
   margin: 50px;
-  overflow-y: auto;
+  overflow-x: auto;
   word-wrap: break-word;
   width: 35%;
-  flex-wrap: wrap;
 }

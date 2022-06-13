@@ -43,6 +43,7 @@ class Game extends React.Component {
       movements: [],
       adyacentes: [],
       capturadosAyuda: [],
+      colorAyuda: undefined
     };
     this.handleClick = this.handleClick.bind(this);
     this.onOriginSelected = this.onOriginSelected.bind(this);
@@ -175,6 +176,29 @@ class Game extends React.Component {
     });    
   }
 
+
+  ayudaParcial(){    
+    const gridS = JSON.stringify(this.state.grid).replaceAll('"', ""); 
+    const Fila = !this.state.origin ? 0: this.state.origin[0];
+    const Columna = !this.state.origin ? 0 :this.state.origin[1];
+    const queryS = "encontraUnCamino(["+Fila+","+Columna+"],"+gridS+",ResultadoColor)";
+    this.setState({
+      waiting: true
+    });
+    this.pengine.query(queryS, (success,response)=>{
+      
+      if(success){
+        this.setState({
+          colorAyuda : response['ResultadoColor'],                   
+          waiting: false,
+        })        
+      }
+      this.handleClick(this.state.colorAyuda);
+    }); 
+
+  }
+
+
   render() {
     if (this.state.grid === null) {
       return null;
@@ -199,8 +223,10 @@ class Game extends React.Component {
           <div className='capturedPanel'>
               <div className='capturedLab'>Capturados</div>
               <div className='capturedNum'>{this.state.adyacentes.length}</div>
+          </div>          
+          <div className='GreedyButton'>
+            <button type='button' onClick={() => this.ayudaParcial()}>Ayuda Greedy</button>
           </div>
-          
         </div>
         <Board 
           grid={this.state.grid}
@@ -209,10 +235,10 @@ class Game extends React.Component {
         />
         <div className='rightPanel'>
           <div className='PEinput'>
-            <input type="number" id="Profundidad" name="profundidad" min="1" max="10"></input>
+            <input placeholder='PE' type="number" id="Profundidad" name="profundidad" min="1" max="10"></input>
           </div>
           <div className='PEbutton'>
-            <button type='button' onClick={() => this.ayuda(document.getElementById("Profundidad").value)}>Ayuda!</button>
+            <button type='button' onClick={() => this.ayuda(document.getElementById("Profundidad").value)}>Ayuda Estrategica!</button>
           </div>
           <div className='resultAyuda'>
           <div className='ayudaAux'>Secuencia de Ayuda</div>

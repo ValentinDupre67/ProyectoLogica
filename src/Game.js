@@ -42,6 +42,7 @@ class Game extends React.Component {
       waiting: false,
       movements: [],
       adyacentes: [],
+      capturadosAyuda: [],
     };
     this.handleClick = this.handleClick.bind(this);
     this.onOriginSelected = this.onOriginSelected.bind(this);
@@ -156,7 +157,18 @@ class Game extends React.Component {
   }
 
   ayuda(profundidad){
-    console.log(profundidad+"nashe");
+    //mejorCamino([F,C],Grid,Profundidad,Resultado):- 
+    const gridS = JSON.stringify(this.state.grid).replaceAll('"', ""); 
+    const Fila = !this.state.origin ? 0: this.state.origin[0];
+    const Columna = !this.state.origin ? 0 :this.state.origin[1];
+    const queryS = "mejorCamino(["+Fila+","+Columna+"],"+gridS+",Resultado)";
+    this.pengine.query(queryS, (success,response)=>{
+      if(success){
+        this.setState({
+          adyacentes: response['Resultado']
+        })
+      }
+    });
   }
 
   render() {
@@ -199,8 +211,16 @@ class Game extends React.Component {
             <button type='button' onClick={() => this.ayuda(document.getElementById("Profundidad").value)}>Ayuda!</button>
           </div>
           <div className='resultAyuda'>
-
-          </div>
+          <div className='ayudaAux'>Secuencia de Ayuda</div>
+              <div className='secuencia'>
+              {this.state.capturadosAyuda.map((colors, i) =>
+              <Square 
+                value={colors}
+                key={i}
+                className={"movementSquare"}
+              />
+              )}</div>
+          </div>          
         </div>
       </div>
       <div className='movementsPanel'>

@@ -18,7 +18,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "install-swipl": "wget http://www.swi-prolog.org/download/stable/bin/swipl-8.2.4-1.x86_64.rpm && rpm -i swipl-8.2.4-1.x86_64.rpm",
+    "custom-start": "npm run install-swipl && swipl pengine_server/run.pl & npm start"
   },
   "eslintConfig": {
     "extends": [
